@@ -1,0 +1,57 @@
+{
+    "name": "bigbucket-ui",
+    "description": "Premium admin dashboard template with responsive and high quality UI",
+    "version": "1.0.0",
+    "keywords": [
+        "css",
+        "sass",
+        "mobile-first",
+        "responsive",
+        "front-end",
+        "framework",
+        "admin",
+        "dashboard",
+        "admin panel"
+    ],
+    "scripts": {
+        "gulp-watch": "gulp watch",
+        "gulp-build": "gulp build",
+        "jekyll-watch": "jekyll build --watch",
+        "jekyll-serve": "jekyll serve --livereload",
+        "gh-pages": "./gh-pages.sh",
+        "dist": "gulp build && JEKYLL_ENV=production jekyll build --destination dist",
+        "publish-dist": "./gh-pages.sh",
+        "watch": "gulp build && npm-run-all --parallel gulp-watch jekyll-watch",
+        "serve": "gulp build && npm-run-all --parallel gulp-watch jekyll-serve"
+    },
+    "devDependencies": {
+        "bootstrap": "^4.1.1",
+        "gulp": "^3.9.1",
+        "gulp-autoprefixer": "^5.0.0",
+        "gulp-rename": "^1.3.0",
+        "gulp-rtlcss": "^1.2.0",
+        "gulp-sass": "^4.0.1",
+        "npm-run-all": "^4.1.3",
+        "grunt-contrib-uglify": "^3.3.0",
+        "grunt-sass": "^2.1.0"
+    },
+    "dependencies": {
+        "opencollective": "^1.0.3"
+    },
+    "browserslist": [
+        "last 1 major version",
+        ">= 1%",
+        "Chrome >= 45",
+        "Firefox >= 38",
+        "Edge >= 12",
+        "Explorer >= 10",
+        "iOS >= 9",
+        "Safari >= 9",
+        "Android >= 4.4",
+        "Opera >= 30"
+    ],
+    "collective": {
+        "type": "thememakker",
+        "url": "https://thememakker.com/"
+    }
+}
