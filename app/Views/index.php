@@ -116,7 +116,7 @@
                         </thead>
                         <tbody>
                             <?php
-                            // Mendapatkan tanggal hari ini dengan format bahasa Indonesia
+                            // Mendapatkan tanggal hari ini dengan format bahasa Indonesia Tes
                             setlocale(LC_TIME, 'id_ID');
                             $today = new DateTime();
                             $formattedToday = strftime('%A, %d-%m-%Y', $today->getTimestamp());
