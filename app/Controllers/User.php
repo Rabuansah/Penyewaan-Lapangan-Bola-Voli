@@ -26,8 +26,10 @@ class User extends BaseController
 
     public function index()
     {
-        $data = $this->penyewaan->getAll();
-        return view('user/index', ['data' => $data]);
+        $lapanganModel = new LapanganModel();
+        $data['lapangan'] = $lapanganModel->findAll();
+        $data['penyewaan'] = $this->penyewaan->getAll();
+        return view('user/index', $data);
     }
 
     public function lapangan_user()
@@ -69,16 +71,43 @@ class User extends BaseController
 
     public function detail_transaksi()
     {
-        $data['penyewaanInfo'] = $this->penyewaan->getAll();
-        // $penyewaanModel = new PenyewaanModel();
-        // $data['penyewaanInfo'] = $penyewaanModel->getPenyewaanInfo();
-        // dd($data);
+        $penyewaanInfo = $this->penyewaan->getAll();
 
-        // usort($data, function ($a, $b) {
-        //     return strtotime($a->tanggal_penyewaan) - strtotime($b->tanggal_penyewaan);
-        // });
+        // Loop melalui data penyewaan untuk mendapatkan status pembayaran
+        foreach ($penyewaanInfo as &$item) {
+            // Lakukan pencarian data pembayaran berdasarkan id penyewaan
+            $pembayaran = $this->pembayaran->findByPenyewaanId($item->id_penyewaan);
+
+            // Jika ada data pembayaran, set status_pembayaran menjadi true
+            // Jika tidak, set status_pembayaran menjadi false
+            $item->status_pembayaran = ($pembayaran) ? true : false;
+        }
+
+        $data['penyewaanInfo'] = $penyewaanInfo;
         return view('user/detail_transaksi/detail_transaksi', $data);
     }
+
+    public function updatePaymentStatus($id_penyewaan)
+    {
+        $result = $this->penyewaan->updatePaymentStatus($id_penyewaan);
+        if ($result) {
+            return redirect()->to(base_url('user/detail_transaksi'))->with('success', 'Status pembayaran berhasil diperbarui.');
+        } else {
+            return redirect()->back()->with('error', 'Gagal memperbarui status pembayaran.');
+        }
+    }
+
+    public function deleteUnpaidBookings()
+    {
+        $timeLimit = 30; // Waktu limit dalam menit
+        $result = $this->penyewaan->deleteUnpaidBookings($timeLimit);
+        if ($result) {
+            return redirect()->to(base_url('user/detail_transaksi'))->with('success', 'Entri pembayaran tidak lunas berhasil dihapus.');
+        } else {
+            return redirect()->back()->with('error', 'Gagal menghapus entri pembayaran tidak lunas.');
+        }
+    }
+
 
     public function proses_sewa()
     {
@@ -163,6 +192,10 @@ class User extends BaseController
                     'token' => $token,
                 ];
                 $this->pembayaran->insert($data);
+                // Set status pembayaran menjadi true untuk setiap id_penyewaan yang dipilih
+                foreach ($selectedIdList as $id_penyewaan) {
+                    $this->penyewaan->updatePaymentStatus($id_penyewaan);
+                }
             }
 
             $url = 'https://app.sandbox.midtrans.com/snap/v2/vtweb/' . $token;

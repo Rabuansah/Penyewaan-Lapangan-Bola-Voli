@@ -15,6 +15,7 @@ class PenyewaanModel extends Model
         'id_lapangan',
         'tanggal_penyewaan',
         'kategori',
+        'status_pembayaran',
     ];
 
     protected $useTimestamps = true;
@@ -72,18 +73,34 @@ class PenyewaanModel extends Model
         return $formattedBookedTimeRanges;
     }
 
+    public function updatePaymentStatus($id_penyewaan)
+    {
+        return $this->set('status_pembayaran', true)
+            ->where('id_penyewaan', $id_penyewaan)
+            ->update();
+    }
 
+    public function deleteUnpaidBookings($timeLimit)
+    {
+        $this->db->transStart();
 
+        // Calculate the time limit
+        $limit = date('Y-m-d H:i:s', strtotime("-$timeLimit minutes"));
 
-    // Method untuk mendapatkan available booking times berdasarkan tanggal yang dipilih
-    // public function tampilWaktu($selectedDate)
-    // {
-    //     return $this->db->table('penyewaan')
-    //         ->select('penyewaan.id_penyewaan, penyewaan.tanggal_penyewaan, jadwal.start_hour, jadwal.end_hour')
-    //         ->join('penyewaan_jadwal', 'penyewaan.id_penyewaan = penyewaan_jadwal.id_penyewaan')
-    //         ->join('jadwal', 'penyewaan_jadwal.id_jadwal = jadwal.id_jadwal')
-    //         ->where('penyewaan.tanggal_penyewaan', $selectedDate)
-    //         ->get()
-    //         ->getResult();
-    // }
+        // Get unpaid bookings that exceed the time limit
+        $unpaidBookings = $this->select('id_penyewaan')
+            ->where('status_pembayaran', false)
+            ->where('created_at <', $limit)
+            ->get()
+            ->getResult();
+
+        // Delete unpaid bookings
+        foreach ($unpaidBookings as $booking) {
+            $this->where('id_penyewaan', $booking->id_penyewaan)->delete();
+        }
+
+        $this->db->transComplete();
+
+        return $this->db->transStatus();
+    }
 }

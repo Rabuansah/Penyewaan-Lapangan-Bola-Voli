@@ -5,6 +5,11 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('content'); ?>
+<style>
+    .fc-time {
+        display: none !important;
+    }
+</style>
 
 <!-- Start Home -->
 <!-- START pricing -->
@@ -14,7 +19,14 @@
             <div class="col-lg-12">
                 <div class="text-center">
                     <h3 class="heading">Pemesanan Lapangan</h3>
-                    <p class="text-muted">Lapangan 1 Gor Chandra Alkadrie</p>
+                    <div class="dropdown ">
+                        <select class="form-control text-center" id="lapanganDropdown">
+                            <!-- Loop untuk menampilkan pilihan lapangan dari database -->
+                            <?php foreach ($lapangan as $value) : ?>
+                                <option value="<?= $value->id_lapangan; ?>"><?= $value->nama_lapangan; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
             </div><!-- End col -->
             <div class="container">
@@ -35,20 +47,59 @@
     $(document).ready(function() {
         var calendar = $('#calendar');
 
-        var events = <?php echo json_encode($data); ?>;
-
+        // Inisialisasi kalender
         calendar.fullCalendar({
-            events: events.map(function(event) {
-                return {
-                    title: event.kategori,
-                    start: event.tanggal_penyewaan, // Pastikan tanggal disesuaikan
-                    allDay: false,
-                    className: 'bg-success',
-                };
-            }),
-
+            // Konfigurasi kalender
         });
+
+        setDefaultCalendar();
+
+        // Fungsi untuk memuat jadwal lapangan A secara default pada kalender
+        function setDefaultCalendar() {
+            var selectedLapanganId = $('#lapanganDropdown').val(); // Ambil id lapangan yang dipilih dari dropdown
+            reloadCalendar(selectedLapanganId); // Memuat ulang kalender sesuai dengan lapangan yang dipilih
+        }
+
+        // Event handler saat pilihan lapangan berubah
+        $('#lapanganDropdown').change(function() {
+            var selectedLapanganId = $(this).val();
+            reloadCalendar(selectedLapanganId); // Memuat ulang kalender sesuai dengan lapangan yang dipilih
+        });
+
+        // Fungsi untuk memuat ulang kalender berdasarkan lapangan yang dipilih
+        function reloadCalendar(lapanganId) {
+            var events = <?php echo json_encode($penyewaan); ?>; // data penyewaan yang sudah ada
+
+            // Filter events sesuai dengan lapangan yang dipilih
+            var filteredEvents = events.filter(function(event) {
+                return event.id_lapangan == lapanganId;
+            });
+
+            // Hapus kalender sebelum membuat yang baru
+            calendar.fullCalendar('destroy');
+
+            // Inisialisasi kalender baru dengan data penyewaan yang baru
+            calendar.fullCalendar({
+                events: filteredEvents.map(function(event) {
+                    var startTime = moment(event.tanggal_penyewaan + ' ' + event.start_hour).format('HH:mm');
+                    var endTime = moment(event.tanggal_penyewaan + ' ' + event.end_hour).format('HH:mm');
+                    var title = startTime + ' - ' + endTime + ' ' + event.username;
+                    return {
+                        title: title,
+                        start: event.tanggal_penyewaan,
+                        allDay: false,
+                        className: event.status_pembayaran == 0 ? 'bg-warning' : 'bg-success', // Memilih kelas CSS berdasarkan status pembayaran
+                        display: 'block',
+                    };
+                }),
+                eventClick: function(calEvent, jsEvent, view) {
+                    alert('Lapangan di Sewa: ' + calEvent.title);
+                }
+            });
+        }
     });
 </script>
+
+
 
 </div><?= $this->endSection(); ?>

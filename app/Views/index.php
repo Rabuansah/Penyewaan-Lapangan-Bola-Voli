@@ -19,6 +19,9 @@
     <!-- CSS -->
     <link href="<?= base_url(); ?>/template/landingpage/style.css" rel="stylesheet">
 
+    <!-- calendar -->
+    <link rel="stylesheet" href="<?= base_url(); ?>/template/assets/vendor/fullcalendar/fullcalendar.min.css">
+
 </head>
 
 <body>
@@ -92,136 +95,19 @@
                 </div>
                 <!-- Dropdown Menu menggunakan <select> -->
                 <div class="dropdown">
-                    <select class="form-control" id="lapanganDropdown">
+                    <select class="form-control text-center" id="lapanganDropdown">
                         <!-- Loop untuk menampilkan pilihan lapangan dari database -->
                         <?php foreach ($lapangan as $value) : ?>
                             <option value="<?= $value->id_lapangan; ?>"><?= $value->nama_lapangan; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-
-                <!-- Tabel Jadwal -->
-                <div class="table-responsive mt-4">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th style="text-align: center; vertical-align: middle;">Hari/Tanggal</th>
-                                <?php
-                                // Loop untuk menampilkan rentang waktu sebagai heading kolom
-                                foreach ($jadwalModel->getJadwalTimeRange() as $timeRange) {
-                                    echo "<th>" . $timeRange . "</th>";
-                                }
-                                ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Mendapatkan tanggal hari ini dengan format bahasa Indonesia Tes
-                            setlocale(LC_TIME, 'id_ID');
-                            $today = new DateTime();
-                            $formattedToday = strftime('%A, %d-%m-%Y', $today->getTimestamp());
-                            // Mendapatkan tanggal satu minggu ke depan
-                            $oneWeekLater = new DateTime('+7 days');
-                            // Loop untuk menampilkan jadwal selama satu minggu ke depan
-                            while ($today <= $oneWeekLater) {
-                                $date = $today->format('d-m-Y');
-                                $dayOfWeek = strftime('%A', $today->getTimestamp()); // Mendapatkan nama hari dalam bahasa Indonesia
-                                // Ubah nama hari dalam bahasa Indonesia
-                                switch ($dayOfWeek) {
-                                    case 'Sunday':
-                                        $dayOfWeek = 'Min';
-                                        break;
-                                    case 'Monday':
-                                        $dayOfWeek = 'Sen';
-                                        break;
-                                    case 'Tuesday':
-                                        $dayOfWeek = 'Sel';
-                                        break;
-                                    case 'Wednesday':
-                                        $dayOfWeek = 'Rab';
-                                        break;
-                                    case 'Thursday':
-                                        $dayOfWeek = 'Kam';
-                                        break;
-                                    case 'Friday':
-                                        $dayOfWeek = 'Jum';
-                                        break;
-                                    case 'Saturday':
-                                        $dayOfWeek = 'Sab';
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                // Mendapatkan jadwal untuk lapangan yang dipilih pada tanggal tersebut
-                                $lapanganId = $_GET['lapangan_id'] ?? null;
-                                $jadwal = $jadwalModel->getJadwalByDateAndLapangan($date, $lapanganId);
-                                echo "<tr>";
-                                echo "<td style='vertical-align: middle; white-space: nowrap;'>" . $dayOfWeek . ', ' . strftime('%d-%m-%Y', $today->getTimestamp()) . "</td>"; // Menampilkan tanggal hari ini dengan format bahasa Indonesia
-
-
-
-
-
-                                // PERBAIKI TABEL JADWAL BOOKING AGAR YANG MUNCUL JADWAL YANG SESUAI
-
-
-
-
-                                // Tentukan nilai tanggal
-                                $tanggal = date('Y-m-d'); // Misalnya, tanggal hari ini
-                                // Mendapatkan rentang waktu
-                                $timeRanges = $jadwalModel->getJadwalTimeRange();
-                                foreach ($timeRanges as $timeRange) {
-                                    echo "<td>";
-                                    $isAvailable = false; // Inisialisasi status ketersediaan
-                                    // Mendapatkan jadwal yang sudah dibayar untuk lapangan dan tanggal yang dipilih
-                                    $paidJadwal = $jadwalModel->getPaidJadwal($lapanganId, $tanggal);
-                                    // Periksa apakah rentang waktu tersedia atau tidak
-                                    if ($paidJadwal) {
-                                        foreach ($paidJadwal as $jam) {
-                                            // Jika rentang waktu tersedia
-                                            if ($jam->time_range == $timeRange) {
-                                                $isAvailable = true;
-                                                echo "tersedia";
-                                                echo date("H:i", strtotime($jam->start_hour)) . " - " . date("H:i", strtotime($jam->end_hour));
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    // Jika tidak tersedia, tampilkan pesan "tidak tersedia"
-                                    if (!$isAvailable) {
-                                        // Pastikan $jam didefinisikan sebelum mencoba mengakses propertinya
-                                        if (isset($jam) && property_exists($jam, 'username')) {
-                                            echo $jam->username;
-                                        } else {
-                                            echo "Tidak Tersedia";
-                                        }
-                                    }
-                                    echo "</td>";
-                                }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                echo "</tr>";
-                                // Tambahkan satu hari ke tanggal
-                                $today->modify('+1 day');
-                            }
-                            ?>
-                        </tbody>
-                    </table>
+                <div class="container">
+                    <div class="row">
+                        <div class="body">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -324,6 +210,64 @@
             // Lakukan sesuatu dengan id lapangan yang dipilih (misalnya, tampilkan jadwal yang sesuai)
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            var calendar = $('#calendar');
+
+            // Inisialisasi kalender
+            calendar.fullCalendar({
+                // Konfigurasi kalender
+            });
+
+            setDefaultCalendar();
+
+            // Fungsi untuk memuat jadwal lapangan A secara default pada kalender
+            function setDefaultCalendar() {
+                var selectedLapanganId = $('#lapanganDropdown').val(); // Ambil id lapangan yang dipilih dari dropdown
+                reloadCalendar(selectedLapanganId); // Memuat ulang kalender sesuai dengan lapangan yang dipilih
+            }
+
+            // Event handler saat pilihan lapangan berubah
+            $('#lapanganDropdown').change(function() {
+                var selectedLapanganId = $(this).val();
+                reloadCalendar(selectedLapanganId); // Memuat ulang kalender sesuai dengan lapangan yang dipilih
+            });
+
+            // Fungsi untuk memuat ulang kalender berdasarkan lapangan yang dipilih
+            function reloadCalendar(lapanganId) {
+                var events = <?php echo json_encode($penyewaan); ?>; // data penyewaan yang sudah ada
+
+                // Filter events sesuai dengan lapangan yang dipilih
+                var filteredEvents = events.filter(function(event) {
+                    return event.id_lapangan == lapanganId;
+                });
+
+                // Hapus kalender sebelum membuat yang baru
+                calendar.fullCalendar('destroy');
+
+                // Inisialisasi kalender baru dengan data penyewaan yang baru
+                calendar.fullCalendar({
+                    events: filteredEvents.map(function(event) {
+                        var startTime = moment(event.tanggal_penyewaan + ' ' + event.start_hour).format('HH:mm');
+                        var endTime = moment(event.tanggal_penyewaan + ' ' + event.end_hour).format('HH:mm');
+                        var title = startTime + ' - ' + endTime + ' ' + event.username;
+                        return {
+                            title: title,
+                            start: event.tanggal_penyewaan,
+                            allDay: false,
+                            className: event.status_pembayaran == 0 ? 'bg-warning' : 'bg-success', // Memilih kelas CSS berdasarkan status pembayaran
+                            display: 'block',
+                        };
+                    }),
+                    eventClick: function(calEvent, jsEvent, view) {
+                        alert('Lapangan di Sewa: ' + calEvent.title);
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="<?= base_url(); ?>/template/assets/bundles/fullcalendarscripts.bundle.js"></script>
+
 </body>
 
 </html>

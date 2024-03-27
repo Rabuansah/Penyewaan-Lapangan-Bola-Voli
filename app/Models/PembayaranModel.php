@@ -32,4 +32,13 @@ class PembayaranModel extends Model
         $query = $builder->get();
         return $query->getResult();
     }
+    public function findByPenyewaanId($penyewaanId)
+    {
+        // Lakukan query ke tabel pembayaran untuk mencari entri dengan id_penyewaan yang sesuai
+        // Gantilah 'pembayaran' dengan nama tabel pembayaran yang sesuai dengan struktur database Anda
+        $query = $this->db->table('pembayaran')->getWhere(['id_penyewaan' => $penyewaanId]);
+
+        // Kembalikan hasil query sebagai satu baris data atau null jika tidak ada entri yang sesuai
+        return $query->getRow();
+    }
 }

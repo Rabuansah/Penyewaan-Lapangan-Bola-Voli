@@ -4,6 +4,7 @@
 <title>User GCA | Lapangan</title>
 <?= $this->endSection(); ?>
 
+
 <?= $this->section('content'); ?>
 <div class="content">
     <div class="container">
@@ -29,43 +30,39 @@
                                 <th scope="col">Kategori Lapangan</th>
                                 <th scope="col">Jam Booking</th>
                                 <th scope="col">Tarif</th>
+                                <th scope="col">Status Pembayaran</th>
                                 <!-- <th scope="col">Status</th> -->
                             </tr>
                         </thead>
                         <tbody>
-
                             <?php foreach ($penyewaanInfo as $value) : ?>
                                 <?php
-                                // $hasil = base64_encode('SB-Mid-server-yY_veDnqri_68P5uk2EJ2cUc:');
-                                // $brl = "https://api.sandbox.midtrans.com/v2/" . $value->id_pembayaran . "/status";
-                                // $header = array(
-                                //     'Accept: application/json',
-                                //     'Authorization: Basic ' . $value->token,
-                                //     'Content-Type: application/json'
-                                // );
-                                // $method = 'GET';
-                                // $ch = curl_init();
-                                // curl_setopt($ch, CURLOPT_URL, $brl);
-                                // curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-                                // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-                                // curl_setopt($ch, CURLOPT_POSTFIELDS, false);
-                                // curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-                                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                                // $result = curl_exec($ch);
-                                // $hasil = json_decode($result, true); 
-                                ?>
-                                <tr scope="row">
-                                    <td>
-                                        <input type="checkbox" name="selected_ids[]" class="select-checkbox js-checkbox" data-tarif="<?= $value->tarif ?>" value="<?= $value->id_penyewaan ?>">
-                                    </td>
-                                    <td><?= $value->tanggal_penyewaan; ?></td>
-                                    <td><?= $value->username; ?></td>
-                                    <td><?= $value->nama_lapangan; ?></td>
-                                    <td><?= $value->kategori; ?></td>
-                                    <td><?= substr($value->start_hour, 0, 5); ?> - <?= substr($value->end_hour, 0, 5); ?></td>
-                                    <td>Rp <?= number_format($value->tarif, 0, ',', '.'); ?></td>
-                                    <!-- <td></td> -->
-                                </tr>
+                                $current_date = date('Y-m-d');
+                                if ($value->tanggal_penyewaan >= $current_date) : ?>
+                                    <tr scope="row" class="<?= ($value->status_pembayaran == 1) ? 'row-lunas' : ''; ?>">
+                                        <td>
+                                            <?php if ($value->status_pembayaran != 1) : ?>
+                                                <input type="checkbox" name="selected_ids[]" class="select-checkbox js-checkbox" data-tarif="<?= $value->tarif ?>" value="<?= $value->id_penyewaan ?>">
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= $value->tanggal_penyewaan; ?></td>
+                                        <td><?= $value->username; ?></td>
+                                        <td><?= $value->nama_lapangan; ?></td>
+                                        <td><?= $value->kategori; ?></td>
+                                        <td><?= substr($value->start_hour, 0, 5); ?> - <?= substr($value->end_hour, 0, 5); ?></td>
+                                        <td>Rp <?= number_format($value->tarif, 0, ',', '.'); ?></td>
+                                        <td>
+                                            <?php
+                                            // Lakukan pengecekan status_pembayaran
+                                            if ($value->status_pembayaran == 1) {
+                                                echo 'Lunas';
+                                            } else {
+                                                echo 'Pending';
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
