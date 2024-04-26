@@ -21,6 +21,14 @@
 
     <!-- calendar -->
     <link rel="stylesheet" href="<?= base_url(); ?>/template/assets/vendor/fullcalendar/fullcalendar.min.css">
+    <!-- JQuery -->
+    <script src="<?= base_url(); ?>/template/assets/vendor/jquery/jquery-3.6.0.min.js"></script>
+
+    <style>
+        .fc-time {
+            display: none !important;
+        }
+    </style>
 
 </head>
 
@@ -102,11 +110,14 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="container">
+                <div class="container mt-3">
                     <div class="row">
                         <div class="body">
                             <div id="calendar"></div>
                         </div>
+                    </div>
+                    <div class="mt-3 d-flex justify-content-center justify-content-md-end">
+                        <a href="<?= base_url('login'); ?>" class="btn btn-lg btn-outline-primary" type="button">Booking</a>
                     </div>
                 </div>
             </div>
@@ -204,6 +215,7 @@
 
     <!-- JS -->
     <script src="<?= base_url(); ?>/template/landingpage/main.js"></script>
+    <script src="<?= base_url(); ?>/template/assets/bundles/fullcalendarscripts.bundle.js"></script>
     <script>
         document.getElementById('lapanganDropdown').addEventListener('change', function() {
             var selectedLapanganId = this.value;
@@ -266,7 +278,7 @@
             }
         });
     </script>
-    <script src="<?= base_url(); ?>/template/assets/bundles/fullcalendarscripts.bundle.js"></script>
+
 
 </body>
 

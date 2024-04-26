@@ -78,6 +78,7 @@
 </div>
 <script>
     const checkboxes = document.querySelectorAll('.select-checkbox');
+    s
     const displayTotalTarifElement = document.getElementById('displayTotalTarif');
     const hiddenTotalTarifElement = document.getElementById('hiddenTotalTarif');
     let totalTarif = 0;

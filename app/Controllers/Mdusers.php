@@ -56,7 +56,7 @@ class Mdusers extends ResourcePresenter
         if (!$this->validate($this->users->validationRules(), $this->users->validationMessages)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-        $data['verified'] = 0;
+        $data['verified'] = 1;
 
         $data['role'] = 'user';
         $password = $data['password'];
