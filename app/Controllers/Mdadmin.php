@@ -87,8 +87,10 @@ class Mdadmin extends ResourcePresenter
     {
         $data = $this->request->getPost();
         if (!$this->validate($this->users->validationRules(), $this->users->validationMessages)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return
+                redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
+        $data['verified'] = 1;
 
         $data['role'] = 'admin';
         $password = $data['password'];
@@ -142,7 +144,7 @@ class Mdadmin extends ResourcePresenter
         $users = $this->users->find($id);
 
         if (!$users) {
-            return redirect()->to(site_url('mdusers'))->with('error', 'Data Lapangan Tidak Ditemukan');
+            return redirect()->to(site_url('mdusers'))->with('error', 'Data Tidak Ditemukan');
         }
 
         $data = $this->request->getPost();

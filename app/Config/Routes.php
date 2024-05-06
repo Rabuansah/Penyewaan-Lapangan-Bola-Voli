@@ -54,9 +54,9 @@ $routes->get('proses_simpan', 'User::proses_simpan', ['filter' => 'isLoggedIn'])
 $routes->post('proses_pembayaran', 'User::proses_pembayaran', ['filter' => 'isLoggedIn']);
 
 //Presenter routes
-$routes->presenter('mdadmin', ['filter' => 'isLoggedIn']);
+$routes->presenter('mdadmin');
 $routes->presenter('mdusers', ['filter' => 'isLoggedIn']);
-$routes->presenter('mdlapangan', ['filter' => 'isLoggedIn']);
+$routes->presenter('mdlapangan');
 $routes->presenter('mdjadwal', ['filter' => 'isLoggedIn']);
 $routes->presenter('laporan', ['filter' => 'isLoggedIn']);
 /*

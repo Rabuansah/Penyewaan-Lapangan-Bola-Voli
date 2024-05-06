@@ -15,7 +15,7 @@
                     </div>
                     <div class="body">
                         <?php $errors = session()->getFlashdata('errors') ?>
-                        <form id="basic-form" method="post" novalidate action="<?= site_url('Mdusers/Create') ?>" autocomplete="off" enctype="multipart/form-data">
+                        <form id="basic-form" method="post" novalidate action="<?= site_url('Mdadmin/Create') ?>" autocomplete="off" enctype="multipart/form-data">
                             <?= csrf_field() ?>
 
                             <div class="form-group mx-3">

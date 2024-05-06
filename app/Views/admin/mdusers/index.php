@@ -39,7 +39,7 @@
                             <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>No</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>No Hp</th>

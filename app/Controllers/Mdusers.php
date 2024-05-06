@@ -158,9 +158,7 @@ class Mdusers extends ResourcePresenter
     public function update($id = null)
     {
         $data = $this->request->getPost();
-        if (!$this->validate($this->users->validationRules(), $this->users->validationMessages)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
+
         $this->users->update($id, $data);
         return redirect()->to(site_url('mdusers'))->with('success', 'Data User Berhasil Diupdate');
     }

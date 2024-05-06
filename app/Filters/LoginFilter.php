@@ -18,22 +18,21 @@ class LoginFilter implements FilterInterface
 
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Periksa apakah pengguna belum login dan bukan pada halaman login atau register
-        if (!session()->has('id_users') && !in_array(uri_string(), ['login', 'register'])) {
+        // Periksa apakah pengguna belum login
+        if (!session()->has('id_users')) {
             return redirect()->to(site_url('/login'))->with('error', 'Silakan login untuk mengakses halaman ini.');
         }
 
         // Periksa apakah pengguna adalah admin
-        if (session()->has('id_users')) {
-            $user = $this->users->find(session('id_users'));
-            if ($user && $user->role !== 'admin' && in_array(uri_string(), ['admin', 'mdadmin', 'mdusers', 'mdjadwal', 'mdlapangan', 'laporan'])) {
-                // Jika bukan admin, arahkan mereka ke halaman yang sesuai
-                return redirect()->to(site_url('user'));
-            }
+        $user = $this->users->find(session('id_users'));
+        if ($user && $user->role !== 'admin' && in_array(uri_string(), ['admin', 'mdadmin', 'mdusers', 'mdjadwal', 'mdlapangan', 'laporan'])) {
+            // Jika bukan admin, arahkan mereka ke halaman yang sesuai
+            return redirect()->to(site_url('user'));
         }
 
         return $request;
     }
+
 
 
 

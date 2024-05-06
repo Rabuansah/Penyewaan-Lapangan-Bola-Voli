@@ -34,7 +34,7 @@ class UsersModel extends Model
     public function validationRules(): array
     {
         return [
-            'username' => 'required|min_length[3]|is_unique[users.username]',
+            'username' => 'required|min_length[3]',
             'password' => 'required|min_length[6]',
             'confirm_password' => 'required|matches[password]', // Confirm password harus cocok dengan password
             'email' => 'required|valid_email|is_unique[users.email]',
