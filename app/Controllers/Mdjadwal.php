@@ -7,6 +7,7 @@ use \App\Models\JadwalModel;
 
 class Mdjadwal extends ResourcePresenter
 {
+    protected $jadwal;
     function __construct()
     {
         $this->jadwal = new JadwalModel();

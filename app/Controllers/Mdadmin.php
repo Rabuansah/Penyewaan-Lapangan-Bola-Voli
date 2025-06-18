@@ -8,8 +8,13 @@ use \App\Models\UsersModel;
 
 class Mdadmin extends ResourcePresenter
 {
+    
+    protected $users;
+    protected $pembayaran;
+    protected $db;
     function __construct()
     {
+        helper('costum');
         $this->users = new UsersModel();
         $this->pembayaran = new PembayaranModel();
         $this->db      = \Config\Database::connect();
@@ -90,7 +95,7 @@ class Mdadmin extends ResourcePresenter
             return
                 redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-        $data['verified'] = 1;
+        //$data['verified'] = 1;
 
         $data['role'] = 'admin';
         $password = $data['password'];

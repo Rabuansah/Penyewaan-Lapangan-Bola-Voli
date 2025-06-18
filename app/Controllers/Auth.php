@@ -30,7 +30,7 @@ class Auth extends BaseController
 
         if ($query) {
             if (password_verify($post['password'], $query->password)) {
-                if ($query->verified == 1) { // Periksa apakah pengguna telah diverifikasi
+                //if (isset($query->verified) && $query->verified == 1) { // Periksa apakah pengguna telah diverifikasi
                     // Pengguna telah diverifikasi, izinkan masuk
                     $params = [
                         'id_users' => $query->id_users,
@@ -42,10 +42,10 @@ class Auth extends BaseController
                     } else {
                         return redirect()->to(site_url('user'));
                     }
-                } else {
-                    // Pengguna belum diverifikasi, tampilkan pesan error
-                    return redirect()->back()->withInput()->with('error', 'Akun Anda belum diverifikasi. Silakan cek email Anda untuk instruksi verifikasi.');
-                }
+                // } else {
+                //     // Pengguna belum diverifikasi, tampilkan pesan error
+                //     return redirect()->back()->withInput()->with('error', 'Akun Anda belum diverifikasi. Silakan cek email Anda untuk instruksi verifikasi.');
+                // }
             } else {
                 return redirect()->back()->withInput()->with('error', 'Password Salah');
             }

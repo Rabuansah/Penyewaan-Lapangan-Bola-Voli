@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="<?= base_url(); ?>/template/assets/vendor/fullcalendar/fullcalendar.min.css">
     <!-- JQuery -->
     <script src="<?= base_url(); ?>/template/assets/vendor/jquery/jquery-3.6.0.min.js"></script>
+    
 
     <style>
         .fc-time {

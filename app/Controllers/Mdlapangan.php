@@ -7,6 +7,7 @@ use \App\Models\LapanganModel;
 
 class Mdlapangan extends ResourcePresenter
 {
+    protected $lapangan;
     function __construct()
     {
         $this->lapangan = new LapanganModel();

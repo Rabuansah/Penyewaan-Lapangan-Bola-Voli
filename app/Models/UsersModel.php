@@ -23,11 +23,11 @@ class UsersModel extends Model
     ];
     public function getAdmin()
     {
-        return $this->where('role !=', 'user')->findAll();
+        return $this->where('role', 'admin')->findAll();
     }
     public function getUsers()
     {
-        return $this->where('role !=', 'admin')->findAll();
+        return $this->where('role', 'user')->findAll();
     }
 
     protected $useTimestamps = true; //berfungsi untuk menampilakn created_at dan updated_at
